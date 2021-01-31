@@ -1,11 +1,7 @@
 <?php
+include('templates/main.php');
 require_once("config.php");
 ?>
-<html>
-<head>
-<title>test</title>
-</head>
-<body>
-sadasdsadas
-</body>
-</html>
+<?php
+include('templates/bottom.php');
+?>
