@@ -2,6 +2,7 @@
 session_start();
 if(isset($_GET['logout'])) {
     $_SESSION['kullanici'] = '';
+    $_SESSION['kullanici_id'] = '';
     header('LOCATION:index.php'); die();
 }
 ?>

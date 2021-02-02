@@ -9,13 +9,13 @@ require_once("config.php");
         Kullanıcı:
       </span>
       <span>
-        <input type="text" value="isim gir" name="kul_ad">
+        <input type="text" placeholder="isim gir" name="kul_ad">
       </span>
     </div>
     <div>
       <span>Şifre:</span>
       <span>
-        <input type="password" value="şifre gir" name="kul_sifre">
+        <input type="password" placeholder="şifre gir" name="kul_sifre">
       </span>
     </div>
     <div>
@@ -28,17 +28,19 @@ require_once("config.php");
 </div>
 <?php
 if (isset($_POST['giris'])) {
-  $sifre = "SELECT k_kulad, k_sifre FROM kullanicilar";
+  $sifre = "SELECT * FROM kullanicilar";
   $sifreQuery = mysqli_query($baglanti,$sifre);
 
   while ($sifreFetch = mysqli_fetch_array($sifreQuery)) {
    if ($_POST['kul_ad'] == $sifreFetch["k_kulad"]) {
      $sifre = $sifreFetch["k_sifre"];
+     $k_id = $sifreFetch["k_id"];
    }
   }
 
   if (password_verify($_POST['kul_sifre'], $sifre)) {
     $_SESSION["kullanici"] = $_POST["kul_ad"];
+    $_SESSION["kullanici_id"] = $k_id;
     header('LOCATION:index.php');
   }else{
     echo "<script type= 'text/javascript'>alert('Kullanıcı adı veya şifresi yanlış!');</script>";
