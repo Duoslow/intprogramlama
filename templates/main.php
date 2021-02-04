@@ -3,6 +3,8 @@ session_start();
 if(isset($_GET['logout'])) {
     $_SESSION['kullanici'] = '';
     $_SESSION['kullanici_id'] = '';
+    $_SESSION['p_kullanici'] = '';
+    $_SESSION['p_kullanici_id'] = '';
     header('LOCATION:index.php'); die();
 }
 ?>
@@ -19,7 +21,7 @@ if(isset($_GET['logout'])) {
       <nav>
         <ul class="nav-bar">
           <li><a href="index.php">anasayfa</a></li>
-          <li><a href="istatistik.php">istatistik</a></li>
+          <!-- <li><a href="istatistik.php">istatistik</a></li> -->
           
           <?php
            if($_SESSION['kullanici']){

@@ -1,160 +1,137 @@
 <?php
 include('templates/main.php');
 require_once("config.php");
-?>
-<script type="text/javascript">  
-    function test1(val){
-        $.ajax({
-		      type: "POST",
-		      url: "/listeleme/ilcelist.php",
-		      data:'il_id='+val,
-		      success: function(data){
-		      	$("#ilceler").html(data);
-		      }
-	      });
-    }
-    function test2(val){
-        $.ajax({
-		      type: "POST",
-		      url: "/listeleme/unifakulte.php",
-		      data:'uni_ad='+val,
-		      success: function(data){
-		      	$("#fakulteler").html(data);
-		      }
-	      });
-    }
-    function test3(val,val2){
-        $.ajax({
-		      type: "POST",
-		      url: "/listeleme/unibolum.php",
-		      data:{'uni_ad':document.getElementById('uniler').value,'fakulte': val },
-		      success: function(data){
-		      	$("#bolumler").html(data);
-		      }
-	      });
-    }
-</script>
-<form action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?> method="post" class="kuldetay">
-
-<div><span>Adınız:</span> <span><input type="text" name="k_adi" required></span></div>
-<div><span>Soyadınız:</span> <span><input type="text" name="k_soyadi" required></span></div>
-<div><span>Adres:</span>
- <span>
- <span>İl:</span>
- <select name="k_il" id='il' onchange="test1(this.value)">
- <option value='0'>-</option>
- <?php
-          require_once 'config.php';
-          $sqli = "SELECT il_id,il FROM `iller` ORDER BY il_id";
-          $result = mysqli_query($baglanti, $sqli);
-           while ($row = mysqli_fetch_array($result)) {
-            echo '<option value='.$row['il_id'].'>'.$row['il'].'</option>';
-           }
-  ?>
-  </select>
- <span>İlçe:</span>
- <select name="k_ilce" id="ilceler">
-    <option value="">Lütfen önce il seçin!</option>
- </select>
- <span>Adres:</span><input type="text" name="k_adres">
- </span></div>
-
- <div><span>Üniversite:</span>
- <span>
- <span>Üniversite:</span>
- <select name="k_uni" id='uniler' onchange="test2(this.value)" style="width: 200px !important; min-width: 200px; max-width: 200px;">
- <option value='0'>-</option>
- <?php
-          require_once 'config.php';
-          $sqli = "select u_id,adi from uniler group by adi having count(*) >1 order by u_id";
-          $result = mysqli_query($baglanti, $sqli);
-           while ($row = mysqli_fetch_array($result)) {
-            echo '<option value="'.$row['adi'].'">'.$row['adi'].'</option>';
-           }
-  ?>
-  </select><br> 
- <span>Fakülte:</span>
- <select name="k_fakulte" id="fakulteler" onchange="test3(this.value)">
-    <option value="-">Lütfen önce Üniversite seçin!</option>
- </select><br>
- <span>Bölüm:</span>
- <select name="k_bolum" id="bolumler">
-    <option value="-">Lütfen önce fakülte seçin!</option>
- </select>
- </span></div>
-
-<div><span>E-posta:</span><span> <input type="email" name="k_email"></span></div>
-<div><span>Telefon Numarası:</span><span> <input type="tel" placeholder="111-111-1111" name="k_telno"></span></div>
-<div><span>Cinsiyet</span>
-<span>   
-<input type="radio" id="bay" name="k_cinsiyet" value="bay">
-  <label for="bay">Bay</label>
-  <input type="radio" id="bayan" name="k_cinsiyet" value="bayan">
-  <label for="bayan">Bayan</label>
-  <input type="radio" id="diger" name="k_cinsiyet" value="diger">
-  <label for="diger">Diğer</label>
-</span>
-</div>
-<div><span>Doğum Tarihi:</span><span> <input type="date" name="k_dogumtarihi"></span></div>
-<div><span>Doğum Yeri:</span><span> <input type="text" name="k_dogumyeri"></span></div>
-<div><span>Medeni Durum</span>
-<span>   
-<input type="radio" id="Bekar" name="k_medeni" value="Bekar">
-  <label for="Bekar">Bekar</label>
-  <input type="radio" id="Evli" name="k_medeni" value="Evli">
-  <label for="Evli">Evli</label>
-  <input type="radio" id="Bosanmış" name="k_medeni" value="Bosanmış">
-  <label for="Bosanmış">Boşanmış</label>
-</span>
-</div>
-<div><span>Ehliyet</span>
-<span>   
-<input type="radio" id="Var" name="k_ehliyet" value="Var">
-  <label for="Var">Var</label>
-  <input type="radio" id="Yok" name="k_ehliyet" value="Yok">
-  <label for="Yok">Yok</label>
-</span>
-</div>
-<input type="submit" value="Bilgilerimi Güncelle"  id="" name="kul_gnc">
-</form>
-<?php
-require_once 'config.php';
-if (isset($_POST["kul_gnc"])){
-    $k_id = $_SESSION['kullanici_id'];
-    $k_adi = $_POST["k_adi"];
-    $k_soyadi = $_POST["k_soyadi"];
-    $k_il = $_POST["k_il"];
-    $k_ilce = $_POST["k_ilce"];	
-    $k_adres = $_POST["k_adres"];
-    $k_uni = $_POST["k_uni"];
-    $k_fakulte = $_POST["k_fakulte"];
-    $k_bolum = $_POST["k_bolum"];
-    $k_email = $_POST["k_email"];
-    $k_telno = $_POST["k_telno"];
-    $k_cinsiyet = $_POST["k_cinsiyet"];
-    $k_dogumtarihi = $_POST["k_dogumtarihi"];
-    $k_dogumyeri = $_POST["k_dogumyeri"];
-    $k_medeni = $_POST["k_medeni"];
-    $k_ehliyet = $_POST["k_ehliyet"];
-
-    $sqli1 = "select u_id from uniler WHERE adi = '".$_POST["k_uni"]."' AND fakulte = '".$_POST["k_fakulte"]."' AND bolum = '".$_POST["k_bolum"]."'";
-    $result1 = mysqli_query($baglanti, $sqli1);
-    $row1 = mysqli_fetch_array($result1);
-    
-
-    $sql = "INSERT INTO kullanici_detaylari (k_id, k_adi, k_soyadi, k_il, k_ilce, k_adres, u_id, k_email, k_telno, k_cinsiyet, k_dogumtarihi, k_dogumyeri, k_medeni, k_ehliyet)
-    VALUES ('".$k_id."' , '".$k_adi."' , '".$k_soyadi."' ,'".$k_il."' , '".$k_ilce."' , '".$k_adres."' , '".$row1['u_id']."' , '".$k_email."' , '".$k_telno."' , '".$k_cinsiyet."' , '".$k_dogumtarihi."' , '".$k_dogumyeri."' , '".$k_medeni."' , '".$k_ehliyet."')";
-  
-    if ($baglanti->query($sql) === TRUE) {
-    echo "<script type= 'text/javascript'>alert('Bilgiler Güncellendi');window.location.href = 'kayit.php';</script>";
-    }
-    else {
-    echo "<script type= 'text/javascript'>alert('Aynı Kullaniciyi Ekleyemezsin');window.location.href = 'kayit.php';</script>";
-    }
-    $baglanti->close();
+if ($_SESSION["kullanici_id"] == ""){
+  header('LOCATION:giris.php'); die();
 }
-
+if(isset($_GET["p_name"])){
+  $_SESSION['p_kullanici']=$_GET["p_name"];
+}else{
+  $_SESSION['p_kullanici']='';
+  $_SESSION["p_kullanici_id"] = '';
+}
 ?>
+
+<div id="kullanıcı_alani">
+  <div>
+    <img width="150" height="150" src="/assets/pp.png"></img>
+    <div style="display: flex; margin: 8px 0 8px 0;">
+      <h1 style="margin-right: auto; font-size: 20px;">Uğur Yavaş</h1>
+      <div>
+        <a href="kullanici_bilgi.php">Bilgilerimi Güncelle</a>
+      </div>
+    </div>
+    <hr style="margin-bottom: 8px;"></hr>
+    <div class="kullanici-grid">
+      <div class="kullanici-bilgi">
+      <?php 
+      require_once 'config.php';
+      if($_SESSION['p_kullanici']==''){
+        $kulid = $_SESSION["kullanici_id"];
+      }else{
+        $sqla = "SELECT k_id FROM kullanicilar WHERE k_kulad='".$_SESSION['p_kullanici']."'";
+        $profil_bilgi = $baglanti->query($sqla);   
+        if($profil_bilgi->num_rows > 0){
+          while($row = $profil_bilgi->fetch_assoc()) {
+            $kulid = $row['k_id'];
+            $_SESSION["p_kullanici_id"] = $row['k_id'];
+          }
+        }else
+        {
+          header('LOCATION:kullanici.php'); die();
+        } 
+
+      }
+      
+      $sql = "SELECT k.*, il, ilce, adi, fakulte, bolum FROM iller, ilceler, kullanici_detaylari k join uniler u on k.u_id = u.u_id WHERE  k_id =".$kulid." AND k_il= il_id AND k_ilce=ilce_id GROUP BY k_id";
+      $kul_bilgiler = $baglanti->query($sql);    
+      while($row = $kul_bilgiler->fetch_assoc()) {
+        echo "<span><label>Memleketi:</label> ".$row['il'].",".$row['ilce']."</span><br>";
+        echo "<span><label>Doğum Yeri:</label> ".$row['k_dogumyeri']."</span><br>";
+        echo "<span><label>Doğum Tarihi:</label>".$row['k_dogumtarihi']."</span><br>";
+        echo "<span><label>E-posta:</label> <a href=mailto:".$row['k_email'].">".$row['k_email']."</a></span><br>";
+        echo "<span><label>Telefon:</label> ".$row['k_telno']."</span><br>";
+        echo "<span><label>Cinsiyet:</label> ".$row['k_cinsiyet']."</span><br>";
+        echo "<span><label>Medeni Durum:</label> ".$row['k_medeni']."</span><br>";
+        echo "<span><label>Ehliyet Durum:</label> ".$row['k_ehliyet']."</span><br><br>";
+        echo "<span>".$row['adi']." ".$row['fakulte']." ".$row['bolum']." 'de Okuyor</span><br>";
+      }
+      
+      ?>
+
+      </div>
+      <div style="height: 500px;">
+        <div class="chat-main">
+
+          <div class="chat-kutu chat-sag">
+            <div>
+            selam
+            </div>
+          </div>
+
+        </div>
+        <div class="mesaj-alani">
+        <script type="text/javascript">
+          function test2() {
+            $.ajax({
+              type: "GET",
+              url: "chat.php",
+              success: function(data) {
+                $(".chat-main").html(data);
+              }
+            });
+          }
+          function ajax(){
+          var req=new XMLHttpRequest();
+          req.onreadystatechange=function(){
+          if(req.readyState==4 && req.status==200){
+          document.getElementsByClassName('chat-main').innerHTML=req.responseText;
+            
+        }
+
+        }
+        req.open('GET','chat.php',true);
+        req.send();
+        }
+	      setInterval(function(){test2()},1000);
+
+	      </script>
+          <form action="" method="post">
+          <input type="text" name="p_chat_icerik"placeholder="Mesaj..." />
+          <button type="submit" name="p_chat" placeholder="Mesaj..." >Yolla</button>
+          </form>
+          <?php
+            require_once 'config.php';
+            if (isset($_POST["p_chat"])){
+                $p_chat_icerik = $_POST["p_chat_icerik"];	
+                $c_kullanici = $_SESSION['kullanici'];
+
+                if ($_SESSION["p_kullanici_id"]){
+                  $c_hedef_k = $_SESSION["p_kullanici_id"];
+                }else{
+                  $c_hedef_k = $_SESSION['kullanici_id'];
+                }
+                
+                $sql = "INSERT INTO profil_chati (c_kullanici, c_hedef_k, mesaj)
+                VALUES ('".$_SESSION['kullanici_id']."','".$c_hedef_k."','".$p_chat_icerik."')";
+              
+                if ($baglanti->query($sql) === TRUE) {
+                echo "<script type= 'text/javascript'>location.reload();return false;</script>";
+                }
+                else {
+                echo "<script type= 'text/javascript'>alert('HATA');window.location.href = 'kullanici.php';</script>";
+                }
+                $baglanti->close();
+            }
+
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php
+// echo $_SESSION["kullanici_id"];
 include('templates/bottom.php');
 ?>
