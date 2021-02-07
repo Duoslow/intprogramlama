@@ -37,7 +37,7 @@ if (isset($_POST["kayit"])){
     VALUES ('".$k_kuladi."','".password_hash($k_sifre, PASSWORD_DEFAULT)."')";
   
     if ($baglanti->query($sql) === TRUE) {
-    echo "<script type= 'text/javascript'>alert('Yeni Kullanici Eklendi');window.location.href = 'kayit.php';</script>";
+    echo "<script type= 'text/javascript'>alert('Yeni Kullanici Eklendi');window.location.href = 'giris.php';</script>";
     }
     else {
     echo "<script type= 'text/javascript'>alert('Aynı Kullaniciyi Ekleyemezsin');window.location.href = 'kayit.php';</script>";

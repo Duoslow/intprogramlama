@@ -8,17 +8,68 @@ if(isset($_GET["p_name"])){
   $_SESSION['p_kullanici']=$_GET["p_name"];
 }else{
   $_SESSION['p_kullanici']='';
-  $_SESSION["p_kullanici_id"] = '';
+  $_SESSION["p_kullanici_id"] = $_SESSION['kullanici_id'];
 }
 ?>
 
 <div id="kullanıcı_alani">
-  <div>
-    <img width="150" height="150" src="/assets/pp.png"></img>
+  <div class='kul_foto' >
+  <script type="text/javascript">
+      window.onload = function(){test22()};
+          function test22() {
+            $.ajax({
+              type: "GET",
+              url: "fotogetir.php",
+              success: function(data) {
+                $(".kul_foto").html(data);
+              }
+            });
+          }
+          function ajax(){
+          var req=new XMLHttpRequest();
+          req.onreadystatechange=function(){
+          if(req.readyState==4 && req.status==200){
+          document.getElementsByClassName('kul_foto').innerHTML=req.responseText;
+            
+        }
+
+        }
+        req.open('GET','fotogetir.php',true);
+        req.send();
+        }
+
+	      </script>
+
+  </div>
     <div style="display: flex; margin: 8px 0 8px 0;">
-      <h1 style="margin-right: auto; font-size: 20px;">Uğur Yavaş</h1>
+    <?php
+          require_once 'config.php';
+      if($_SESSION['p_kullanici']==''){
+        $kulid = $_SESSION["kullanici_id"];
+      }else{
+        $sqla = "SELECT k_id FROM kullanicilar WHERE k_kulad='".$_SESSION['p_kullanici']."'";
+        $profil_bilgi = $baglanti->query($sqla);   
+        if($profil_bilgi->num_rows > 0){
+          while($row = $profil_bilgi->fetch_assoc()) {
+            $kulid = $row['k_id'];
+          }
+        }else
+        {
+          header('LOCATION:kullanici.php'); die();
+        } 
+
+      }
+      $sql = "SELECT k_adi,k_soyadi FROM kullanici_detaylari WHERE k_id=".$kulid."";
+      $kul_bilgiler = $baglanti->query($sql);    
+      while($row = $kul_bilgiler->fetch_assoc()) {
+        echo "<h1 style='margin-right: auto; font-size: 20px;'>".$row['k_adi']." ".$row['k_soyadi']."</h1>";
+      }
+
+        ?>
+      
       <div>
-        <a href="kullanici_bilgi.php">Bilgilerimi Güncelle</a>
+        <a href="kullanici_bilgi.php">Bilgilerimi Güncelle</a><br>
+        <a href="fotoyukle.php">Fotoğraf Güncelle</a>
       </div>
     </div>
     <hr style="margin-bottom: 8px;"></hr>
@@ -62,14 +113,8 @@ if(isset($_GET["p_name"])){
       </div>
       <div style="height: 500px;">
         <div class="chat-main">
-
-          <div class="chat-kutu chat-sag">
-            <div>
-            selam
-            </div>
-          </div>
-
         </div>
+        <form action="" method="post" style="height: 15%;">
         <div class="mesaj-alani">
         <script type="text/javascript">
           function test2() {
@@ -96,10 +141,10 @@ if(isset($_GET["p_name"])){
 	      setInterval(function(){test2()},1000);
 
 	      </script>
-          <form action="" method="post">
+          
           <input type="text" name="p_chat_icerik"placeholder="Mesaj..." />
           <button type="submit" name="p_chat" placeholder="Mesaj..." >Yolla</button>
-          </form>
+          
           <?php
             require_once 'config.php';
             if (isset($_POST["p_chat"])){
@@ -126,6 +171,7 @@ if(isset($_GET["p_name"])){
 
           ?>
         </div>
+        </form>
       </div>
     </div>
   </div>

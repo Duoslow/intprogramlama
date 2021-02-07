@@ -255,7 +255,18 @@ content > form{
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 8px;
-  width: min-content;
+  width: fit-content;
+}
+.chat-kutu1 {
+  width: 100%;
+  margin: 8px 32px 8px 8px;
+}
+
+.chat-kutu1 > div {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  width: fit-content;
 }
 
 .chat-sag {
@@ -267,13 +278,13 @@ content > form{
 .mesaj-alani {
   height: inherit;
 }
-.mesaj-alani > form {
-  height: 15%;
+.mesaj-alani {
+  height: 100%;
   display: grid;
   grid-template-columns: 90% auto;
 }
 
-.mesaj-alani > form > input {
+.mesaj-alani > input {
   padding: 16px;
   display: block;
   box-sizing: border-box;
@@ -283,7 +294,7 @@ content > form{
   border: none;
 }
 
-.mesaj-alani > form > button {
+.mesaj-alani  > button {
   height: 100%;
   border: none;
 }

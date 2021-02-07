@@ -40,6 +40,7 @@ require_once("config.php");
   }
 </script>
 <form method="post" class="kuldetay">
+
   <div><span>Adınız:</span> <span><input type="text" name="k_adi" required></span></div>
   <div><span>Soyadınız:</span> <span><input type="text" name="k_soyadi" required></span></div>
   <div><span>Adres:</span>
@@ -123,6 +124,7 @@ require_once("config.php");
   </div>
   <button type="submit" id="kul_gnc" name="kul_gnc">Bilgilerimi Güncelle</button>
 </form>
+<a class="kuldetay" href="?hsil=1" style="float:right;color:red;">Hesabımı sil</a>
 <?php
 require_once 'config.php';
 if (isset($_POST["kul_gnc"])) {
@@ -142,6 +144,10 @@ if (isset($_POST["kul_gnc"])) {
   $k_dogumyeri = $_POST["k_dogumyeri"];
   $k_medeni = $_POST["k_medeni"];
   $k_ehliyet = $_POST["k_ehliyet"];
+  $k_foto = $_POST["k_foto"];
+  
+  $sqlsilme = "DELETE FROM kullanici_detaylari WHERE k_id = ".$k_id."";
+  $silmeq = mysqli_query($baglanti, $sqlsilme);
 
   $sqli1 = "select u_id from uniler WHERE adi = '" . $_POST["k_uni"] . "' AND fakulte = '" . $_POST["k_fakulte"] . "' AND bolum = '" . $_POST["k_bolum"] . "'";
   $result1 = mysqli_query($baglanti, $sqli1);
@@ -152,11 +158,36 @@ if (isset($_POST["kul_gnc"])) {
     VALUES ('" . $k_id . "' , '" . $k_adi . "' , '" . $k_soyadi . "' ,'" . $k_il . "' , '" . $k_ilce . "' , '" . $k_adres . "' , '" . $row1['u_id'] . "' , '" . $k_email . "' , '" . $k_telno . "' , '" . $k_cinsiyet . "' , '" . $k_dogumtarihi . "' , '" . $k_dogumyeri . "' , '" . $k_medeni . "' , '" . $k_ehliyet . "')";
 
   if ($baglanti->query($sql) === TRUE) {
-    echo "<script type= 'text/javascript'>alert('Bilgiler Güncellendi');window.location.href = 'kayit.php';</script>";
+    echo "<script type= 'text/javascript'>alert('Bilgiler Güncellendi');window.location.href = 'fotoyukle.php';</script>";
   } else {
     echo "<script type= 'text/javascript'>alert('Aynı Kullaniciyi Ekleyemezsin');window.location.href = 'kayit.php';</script>";
   }
   $baglanti->close();
+}
+if(isset($_GET['hsil'])) {
+  $sqla = "DELETE FROM kullanicilar WHERE k_id='".$_SESSION['kullanici_id']."';";
+  $sqla1 = "DELETE FROM kullanici_detaylari WHERE k_id='".$_SESSION['kullanici_id']."';";
+  $sqla2 = "DELETE FROM kullanici_fotolar WHERE k_id='".$_SESSION['kullanici_id']."';";
+  $sqla3 = "DELETE FROM main_chat WHERE c_kullanici='".$_SESSION['kullanici_id']."';";
+  $sqla4 = "DELETE FROM profil_chati WHERE c_kullanici='".$_SESSION['kullanici_id']."';";
+  $hesab_sil1 = $baglanti->query($sqla); 
+  $hesab_sil2 = $baglanti->query($sqla1);  
+  $hesab_sil3 = $baglanti->query($sqla2);  
+  $hesab_sil4 = $baglanti->query($sqla3);      
+  $hesab_sil5 = $baglanti->query($sqla4);  
+  if($hesab_sil5->num_rows > 0){
+  while($row = $hesab_sil5->fetch_assoc()) {
+    $_SESSION['kullanici_id'] = '';
+    $_SESSION['kullanici_adi'] = '';
+    echo "<script type= 'text/javascript'>alert('Kullanici Silindi');window.location.href = 'giris.php';</script>";
+    die();
+    
+  }
+  }
+  $_SESSION['kullanici_id'] = '';
+  $_SESSION['kullanici_adi'] = '';
+  echo "<script type= 'text/javascript'>alert('Kullanici Silindi');window.location.href = 'giris.php';</script>";
+  die();
 }
 
 ?>
